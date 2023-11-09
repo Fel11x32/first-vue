@@ -1,7 +1,13 @@
 <template>
 	<div class="app">
-		<post-form @create="createPost" />
-		<post-list :posts="posts" @remove="removePost"/>
+		<h1>Posts page</h1>
+		<my-button class="button-modal" @click="showDialog">Create Post</my-button>
+
+		<my-dialog v-model:show="dialogVisible">
+			<post-form @create="createPost" />
+		</my-dialog>
+
+		<post-list class="post-list-second" :posts="posts" @remove="removePost" />
 	</div>
 </template>
 
@@ -24,16 +30,22 @@ export default {
 				{ id: 2, title: 'Python', body: 'Post description 2' },
 				{ id: 3, title: 'Java', body: 'Post description 3' },
 			],
+			dialogVisible: false,
 		}
 	},
 
 	methods: {
 		createPost(post) {
-			if (post.title === "" || post.body === '') return
+			if (post.title === '' || post.body === '') return
 			this.posts.push(post)
+			this.dialogVisible = false
 		},
 		removePost(post) {
 			this.posts = this.posts.filter(p => p.id !== post.id)
+		},
+
+		showDialog() {
+			this.dialogVisible = true
 		},
 	},
 }
@@ -47,5 +59,11 @@ export default {
 }
 .app {
 	padding: 15px;
+}
+.button-modal {
+	margin-top: 1rem;
+}
+.post-list-second {
+	margin-top: 2rem;
 }
 </style>

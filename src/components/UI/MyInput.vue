@@ -21,7 +21,6 @@ export default {
 		},
 		placeholder: {
 			type: String,
-			required: false,
 		},
 	},
 	methods: {

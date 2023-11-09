@@ -1,5 +1,6 @@
 <template>
-	<div>
+	<!--Директива v-if полностью удаляет объект из DOM дерева, если же нам этого не нужно есть v-show-->
+	<div v-if="posts.length > 0">
 		<h3>List of posts</h3>
 		<!--Перебираем массив-->
 		<post-item
@@ -9,6 +10,8 @@
 			@remove="$emit('remove', post)"
 		/>
 	</div>
+
+	<h2 v-else style="color: red">There are no posts</h2>
 </template>
 
 <script>

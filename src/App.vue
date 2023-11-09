@@ -1,20 +1,22 @@
 <template>
 	<div class="app">
-		<post-form @create="createPost"/>
-		<post-list :posts="posts"/>
+		<post-form @create="createPost" />
+		<post-list :posts="posts" />
 	</div>
 </template>
 
 <script>
 // Импортируем компоненты
-import PostForm from "@/components/PostForm"
-import PostList from "@/components/PostList"
+import PostForm from '@/components/PostForm'
+import PostList from '@/components/PostList'
 
 export default {
 	// Регистрируем компоненты
 	components: {
-		PostList, PostForm,
+		PostList,
+		PostForm,
 	},
+
 	data() {
 		return {
 			posts: [
@@ -24,8 +26,10 @@ export default {
 			],
 		}
 	},
+
 	methods: {
 		createPost(post) {
+			if (post.title === "" || post.body === '') return
 			this.posts.push(post)
 		},
 	},

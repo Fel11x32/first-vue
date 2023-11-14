@@ -18,11 +18,12 @@
 			v-if="!isPostLoading"
 		/>
 		<my-donut v-else></my-donut>
-		<my-pagination
+		<div ref="observer"></div>
+		<!-- <my-pagination
 			:page="page"
 			:total="totalPages"
 			@swap="changePage"
-		></my-pagination>
+		></my-pagination> -->
 	</div>
 </template>
 
@@ -76,9 +77,9 @@ export default {
 			this.dialogVisible = true
 		},
 
-		changePage(pageNumber) {
-			this.page = pageNumber
-		},
+		// changePage(pageNumber) {
+		// 	this.page = pageNumber
+		// },
 
 		// Создание запроса на сервер
 		async fetchPosts() {
@@ -104,9 +105,43 @@ export default {
 				this.isPostLoading = false
 			}
 		},
+		async loadMorePosts() {
+			try {
+				this.page += 1
+
+				const response = await axios.get(
+					'https://jsonplaceholder.typicode.com/posts',
+					{
+						params: {
+							_page: this.page,
+							_limit: this.limit,
+						},
+					}
+				)
+				this.totalPages = Math.ceil(
+					response.headers['x-total-count'] / this.limit
+				)
+				this.posts = [...this.posts, ...response.data]
+			} catch (e) {
+				alert('error')
+			}
+		},
 	},
 	mounted() {
 		this.fetchPosts()
+
+		const options = {
+			rootMargin: '0px',
+			threshold: 1.0,
+		}
+		const callback = (entries, observer) => {
+			/* Content excerpted, show below */
+			if (entries[0].isIntersecting && this.page < this.totalPages) {
+				this.loadMorePosts()
+			}
+		}
+		const observer = new IntersectionObserver(callback, options)
+		observer.observe(this.$refs.observer)
 	},
 	computed: {
 		sortedPost() {
@@ -126,11 +161,11 @@ export default {
 			})
 		},
 	},
-	 watch: {
-		page() {
-			this.fetchPosts()
-		}
-	}, 
+	watch: {
+		// page() {
+		// 	this.fetchPosts()
+		// },
+	},
 }
 </script>
 

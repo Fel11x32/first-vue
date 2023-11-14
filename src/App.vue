@@ -18,6 +18,11 @@
 			v-if="!isPostLoading"
 		/>
 		<my-donut v-else></my-donut>
+		<my-pagination
+			:page="page"
+			:total="totalPages"
+			@swap="changePage"
+		></my-pagination>
 	</div>
 </template>
 
@@ -47,6 +52,7 @@ export default {
 
 			page: 1,
 			limit: 10,
+			totalPages: 0,
 
 			sortOptions: [
 				{ value: 'title', name: 'by title' },
@@ -70,13 +76,26 @@ export default {
 			this.dialogVisible = true
 		},
 
+		changePage(pageNumber) {
+			this.page = pageNumber
+		},
+
 		// Создание запроса на сервер
 		async fetchPosts() {
 			try {
 				this.isPostLoading = true
 
 				const response = await axios.get(
-					'https://jsonplaceholder.typicode.com/posts?_limit=10'
+					'https://jsonplaceholder.typicode.com/posts',
+					{
+						params: {
+							_page: this.page,
+							_limit: this.limit,
+						},
+					}
+				)
+				this.totalPages = Math.ceil(
+					response.headers['x-total-count'] / this.limit
 				)
 				this.posts = response.data
 			} catch (e) {
@@ -107,17 +126,11 @@ export default {
 			})
 		},
 	},
-	/* watch: {
-		selectedSort(newValue) {
-			this.posts.sort((post1, post2) => {
-				if (newValue === 'id') {
-					return post1.id - post2.id
-				} else {
-					return (post1[newValue] ?? '').localeCompare(post2[newValue] ?? '');
-				}
-			})
-		},
-	}, */
+	 watch: {
+		page() {
+			this.fetchPosts()
+		}
+	}, 
 }
 </script>
 

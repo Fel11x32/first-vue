@@ -12,7 +12,11 @@
 			<post-form @create="createPost" />
 		</my-dialog>
 
-		<post-list :posts="sortedAndSearchedPosts" @remove="removePost" v-if="!isPostLoading" />
+		<post-list
+			:posts="sortedAndSearchedPosts"
+			@remove="removePost"
+			v-if="!isPostLoading"
+		/>
 		<my-donut v-else></my-donut>
 	</div>
 </template>
@@ -40,6 +44,10 @@ export default {
 
 			selectedSort: '',
 			searchQuery: '',
+
+			page: 1,
+			limit: 10,
+
 			sortOptions: [
 				{ value: 'title', name: 'by title' },
 				{ value: 'body', name: 'by body' },
@@ -67,18 +75,15 @@ export default {
 			try {
 				this.isPostLoading = true
 
-				setTimeout(async () => {
-					const response = await axios.get(
-						'https://jsonplaceholder.typicode.com/posts?_limit=10'
-					)
-					this.posts = response.data
-					this.isPostLoading = false // В реальном примере это нужно делать в блоке 'finally'
-				}, 1000)
+				const response = await axios.get(
+					'https://jsonplaceholder.typicode.com/posts?_limit=10'
+				)
+				this.posts = response.data
 			} catch (e) {
 				alert('error')
-			} /*finally {
-				this.isPostLoading = false 
-			}*/
+			} finally {
+				this.isPostLoading = false
+			}
 		},
 	},
 	mounted() {
@@ -90,7 +95,9 @@ export default {
 				if (this.selectedSort === 'id') {
 					return post1.id - post2.id
 				} else {
-					return (post1[this.selectedSort] ?? '').localeCompare(post2[this.selectedSort] ?? '')
+					return (post1[this.selectedSort] ?? '').localeCompare(
+						post2[this.selectedSort] ?? ''
+					)
 				}
 			})
 		},
@@ -98,7 +105,7 @@ export default {
 			return this.sortedPost.filter(post => {
 				return post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
 			})
-		}
+		},
 	},
 	/* watch: {
 		selectedSort(newValue) {

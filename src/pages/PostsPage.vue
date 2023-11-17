@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h1>Posts page</h1>
-		<my-input v-model="searchQuery" placeholder="Search..."></my-input>
+		<my-input v-focus v-model="searchQuery" placeholder="Search..."></my-input>
 
 		<div class="app-buttons">
 			<my-button @click="showDialog">Create Post</my-button>
@@ -18,7 +18,7 @@
 			v-if="!isPostLoading"
 		/>
 		<my-donut v-else></my-donut>
-		<div ref="observer"></div>
+		<div v-intersection="loadMorePosts"></div>
 		<!-- <my-pagination
 			:page="page"
 			:total="totalPages"
@@ -129,19 +129,6 @@ export default {
 	},
 	mounted() {
 		this.fetchPosts()
-
-		const options = {
-			rootMargin: '0px',
-			threshold: 1.0,
-		}
-		const callback = (entries, observer) => {
-			/* Content excerpted, show below */
-			if (entries[0].isIntersecting && this.page < this.totalPages) {
-				this.loadMorePosts()
-			}
-		}
-		const observer = new IntersectionObserver(callback, options)
-		observer.observe(this.$refs.observer)
 	},
 	computed: {
 		sortedPost() {

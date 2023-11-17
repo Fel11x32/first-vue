@@ -2,7 +2,7 @@
 	<form @submit.prevent>
 		<h2>Create Post</h2>
 		<!--Реализовываем двухстороннее связывание при помощи v-model (v-bind и $event.target.value)-->
-		<my-input class="input" v-model="post.title" type="text" placeholder="Title"/>
+		<my-input v-focus class="input" v-model="post.title" type="text" placeholder="Title"/>
 		<!--Реализовываем двухстороннее связывание при помощи v-model (v-bind и $event.target.value)-->
 		<my-input class="input" v-model="post.body" type="text" placeholder="Body"/>
 		<my-button class="btn" @click="createPost">Create</my-button>

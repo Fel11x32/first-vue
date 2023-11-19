@@ -1,9 +1,12 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
+
 import components from '@/components/UI'
 import router from '@/router/router'
 import directives from '@/directives'
 
+const pinia = createPinia()
 const app = createApp(App)
 
 components.forEach(component => {
@@ -15,5 +18,6 @@ directives.forEach(directive => {
 })
 
 app
+	.use(pinia)
 	.use(router)
 	.mount('#app')
